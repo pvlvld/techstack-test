@@ -4,6 +4,9 @@ type Salaries = { [specialization: string]: { salary: number; tax: string } };
 type Team = { name: string; specialization: string }[];
 type Report = { [budget: string]: number };
 
+const MIN_SALARY = 100;
+const MAX_SALARY = 100_000;
+
 function percentage(number: number, percentage: number) {
   return (number / 100) * percentage;
 }
@@ -45,10 +48,10 @@ function validateSalaries(salaries: Salaries) {
 function validateSalary(salary: number) {
   const throwInvalidSalaryError = (salary: number) => {
     throw new Error(`
-    Invalid salary value: "${salary}". It must be at least 1.`);
+    Invalid salary value: "${salary}". It must be in the range between ${MIN_SALARY} and ${MAX_SALARY}.`);
   };
 
-  if (salary < 1) {
+  if (rangeLimiter(salary, MIN_SALARY, MAX_SALARY)) {
     throwInvalidSalaryError(salary);
   }
 }
@@ -74,6 +77,14 @@ function validateTax(tax: string) {
   };
 
   checkPercentString(tax);
+}
+
+function rangeLimiter(
+  actualValue: number,
+  minValue: number,
+  maxValue: number
+): number {
+  return Math.max(minValue, Math.min(actualValue, maxValue));
 }
 
 const salaries = {
